@@ -25,9 +25,11 @@ print(annotations)
 ![spacy-annotator demo](demo/spacy-annotator_demo.gif)
 
 ## Contributing
-1. Clone the repo on GitHub;
-2. Commit changes to your own branch; and
-3. Submit a Pull request so that I can review your changes.
+1. Fork the repo on GitHub;
+2. Clone the project to your own machine;
+3. Commit changes to your own branch; and
+4. Push your work back up to your own fork;
+5. Submit a Pull request so that I can review your changes.
 
 ## Credits
 spacy-annotator is based on [SpaCy](https://spacy.io/) and [pigeon](https://github.com/agermanidis/pigeon).   
