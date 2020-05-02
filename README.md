@@ -35,6 +35,6 @@ print(annotations)
 ipywidgets: 7.5.1   
 re: 2.2.1
 
-## Credits
+## References
 spacy-annotator is based on [SpaCy](https://spacy.io/) and [pigeon](https://github.com/agermanidis/pigeon).   
-Many thanks to them for making their awesome library publicly available.
+Many thanks to them for making their awesome libraries publicly available.
