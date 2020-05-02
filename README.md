@@ -32,7 +32,7 @@ print(annotations)
 5. Submit a Pull request so that I can review your changes.
 
 ## Version
-ipywidets: 7.5.1   
+ipywidgets: 7.5.1   
 re: 2.2.1
 
 ## Credits
