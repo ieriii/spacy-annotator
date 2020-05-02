@@ -31,6 +31,10 @@ print(annotations)
 4. Push your work back up to your own fork;
 5. Submit a Pull request so that I can review your changes.
 
+## Version
+ipywidets: 7.5.1
+re: 2.2.1
+
 ## Credits
 spacy-annotator is based on [SpaCy](https://spacy.io/) and [pigeon](https://github.com/agermanidis/pigeon).   
 Many thanks to them for making their awesome library publicly available.
