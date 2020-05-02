@@ -1,6 +1,6 @@
 import re
 import random
-from annotator_utils import filter_spans
+from annotator.annotator_utils import filter_spans
 from IPython.display import display, clear_output
 from ipywidgets import Button, HTML, HBox, Textarea, Output, Layout
 
