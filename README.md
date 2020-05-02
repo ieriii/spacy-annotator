@@ -1,7 +1,7 @@
 # spacy-annotator
 SpaCy annotator for named entity recognition (NER) using ipywidgets
 
-## Examples code
+## Example code
 ```python
 from annotator.annotator import annotate
 import pandas as pd
