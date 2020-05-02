@@ -18,7 +18,7 @@ print(annotations)
 ```
 
 ## Preview
-![spacy-annotator demo](demo/spacy-annotator.gif)
+![spacy-annotator demo](demo/spacy-annotator_demo.gif)
 
 ## Contributing
 1. Fork the repo on GitHub
