@@ -2,8 +2,10 @@
 SpaCy annotator for Named Entity Recognition (NER) using ipywidgets.
 
 The annotator allows users to quickly assign custom labels to one or more entities in the text.   
-The annotations adhere to SpaCy format and are ready to serve as input to Spacy NER model.   
+The annotations adhere to spaCy format and are ready to serve as input to spaCy NER model.   
 No additional code required!
+
+Blog post: [medium/enrico.alemani/spacy-annotator](https://medium.com/@enrico.alemani/how-to-create-training-data-for-spacy-ner-models-using-ipywidgets-c4aa71bf61a2)
 
 ## Example code
 ```python
