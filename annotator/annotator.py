@@ -26,7 +26,9 @@ def annotate(examples,
     -------
     annotations (list) : list of annotations in spacy format: [example text, {'entities': [(span start, span end, label)]}]
     """
-        
+    
+    assert labels is not None, 'Please provide a list of labels'
+
     examples = list(examples)
     if shuffle:
         random.shuffle(examples)
