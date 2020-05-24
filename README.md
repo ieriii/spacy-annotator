@@ -3,8 +3,8 @@ SpaCy annotator for Named Entity Recognition (NER) using ipywidgets.
 
 The annotator allows users to quickly assign custom labels to one or more entities in the text.   
 **Features**:
-* the annotator supports pandas dataframe: it adds annotation in a separate 'annotation' column of the dataframe.   
-* if a spacy model is passed into the annotator, the model extract is use to identify entities in text. This can come handy to understand how the model can be improved in an active learning fashion. 
+* the annotator supports pandas dataframe: it adds annotations in a separate 'annotation' column of the dataframe;   
+* if a spacy model is passed into the annotator, the model extract is use to identify entities in text. This can come handy to understand how the model can be improved in an active learning fashion; 
 * the annotations adhere to spaCy format and are ready to serve as input to spaCy NER model.   
 No additional code required!
 
