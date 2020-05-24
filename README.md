@@ -2,25 +2,35 @@
 SpaCy annotator for Named Entity Recognition (NER) using ipywidgets.
 
 The annotator allows users to quickly assign custom labels to one or more entities in the text.   
-The annotations adhere to spaCy format and are ready to serve as input to spaCy NER model.   
+Note:
+* It supports pandas dataframe: it adds annotation in a separate 'annotation' column of the dataframe.   
+* In addition, if a spacy model is passed into the annotator, the model extract is use to identify entities in text. This can come handy to understand how the model can be improved in an active learning fashion. 
+
+* The annotations adhere to spaCy format and are ready to serve as input to spaCy NER model.   
 No additional code required!
 
 Blog post: [medium/enrico.alemani/spacy-annotator](https://medium.com/@enrico.alemani/how-to-create-training-data-for-spacy-ner-models-using-ipywidgets-c4aa71bf61a2)
 
 ## Example code
 ```python
-from annotator.annotator import annotate
 import pandas as pd
 import re
+from annotator.active_annotations import annotate
 
-df = pd.DataFrame.from_dict({'text':['I bought lots of books in Berlin.']})
+# Data
+df = pd.DataFrame.from_dict({'full_text' : ['I love New York']})
 
-annotations = annotate(df['text'],
-                      labels = ['Product', 'City'],
-                      shuffle = True,
-                      regex_flags = re.IGNORECASE)
+# Annotations
+dd = annotate(df,
+            col_text = 'full_text',
+            labels = ['GPE', 'PERSON'],
+            sample_size=1,
+            model = 'en',
+            regex_flags=re.IGNORECASE
+            )
 
-print(annotations)
+# Example output
+dd['annotations'][0]
 ```
 
 ## Preview
