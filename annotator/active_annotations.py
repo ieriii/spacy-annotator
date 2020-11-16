@@ -15,6 +15,7 @@ def annotate(df,
              labels=None,
              regex_flags=0,
              shuffle=False,
+             delimiter=',',
              include_skip=True,
              display_fn=display):
     
@@ -131,7 +132,7 @@ def annotate(df,
             
             if text:
                 label, items = text.split(':')
-                for item in items.split(','):
+                for item in items.split(delimiter):
                     
                     item  = item.strip()
                     label = label.strip()
