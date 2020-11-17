@@ -18,9 +18,9 @@ setup(
   download_url = 'https://github.com/ieriii/spacy-annotator/archive/v_01.tar.gz',
   keywords = ['spacy', 'NER', 'NLP'],
   install_requires=[
-        'numpy'
-        'spacy==2.2.4'
-        'ipywidgets>=7.5.1'
+        'numpy',
+        'spacy==2.2.4',
+        'ipywidgets>=7.5.1',
         'ipython'
       ],
       zip_safe=False,
