@@ -3,7 +3,7 @@ import re
 import random
 import numpy as np
 from collections import defaultdict
-from annotator.annotator_utils import filter_spans
+from spacy_annotator.annotator_utils import filter_spans
 from IPython.display import display, clear_output
 from ipywidgets import Button, HTML, HBox, Textarea, Output, Layout
 
