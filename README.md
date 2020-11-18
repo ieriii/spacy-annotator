@@ -27,9 +27,9 @@ pd_dd = pd_annotate(df,
             col_text = 'full_text',     # Column in pandas dataframe containing text to be labelled
             labels = ['GPE', 'PERSON'], # List of labels
             sample_size=1,              # Size of the sample to be labelled
-            delimiter='~',              # Delimted to separate entities in GUI
+            delimiter='~',              # Delimiter to separate entities in GUI
             model = None,               # spaCy model for noisy pre-labelling
-            regex_flags=re.IGNORECASE   # one (or more) regex flags to be applied when searching for entities in text
+            regex_flags=re.IGNORECASE   # One (or more) regex flags to be applied when searching for entities in text
             )
 
 # Example output
