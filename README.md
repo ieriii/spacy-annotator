@@ -39,10 +39,6 @@ pd_dd['annotations'][0]
 ## Preview
 ![spacy-annotator demo](demo/spacy-annotator_demo.gif)
 
-## Not using pandas dataframe?
-No problem, you can always label text in a simple python list.   
-Have a look at the `list_annotations.py` module
-
 ## Contributing
 1. Fork the repo on GitHub;
 2. Clone the project to your own machine;
