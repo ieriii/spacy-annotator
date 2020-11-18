@@ -3,7 +3,7 @@ import re
 import random
 import numpy as np
 from collections import defaultdict
-from annotator.annotator_utils import filter_spans
+from spacy_annotator.annotator_utils import filter_spans
 from IPython.display import display, clear_output
 from ipywidgets import Button, HTML, HBox, Textarea, Output, Layout
 
@@ -32,6 +32,7 @@ def annotate(df,
     labels: list(any), list of NER labels
     regex_flags: regex, one or more regex flag to apply to re.compile. (e.g. re.I|re.DOTALL). Default: no flags
     shuffle: bool, option to shuffle data
+    delimiter: str, delimiter to separate entities in GUI. Default: ',' (i.e. comma)
     include_skip: bool, include option to skip example while annotating
     display_fn: func, function for displaying an example to the user
     
