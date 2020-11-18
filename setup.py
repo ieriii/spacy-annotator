@@ -14,7 +14,7 @@ setup(
   description = 'SpaCy annotator for Named Entity Recognition (NER) using ipywidgets.',
   author = 'Enrico Alemani',
   author_email = 'enrico.alemani@hey.com',
-  url = 'https://github.com/ieriii/',
+  url = 'https://github.com/ieriii/spacy-annotator',
   download_url = 'https://github.com/ieriii/spacy-annotator/archive/v_01.tar.gz',
   keywords = ['spacy', 'NER', 'NLP'],
   install_requires=[
