@@ -9,7 +9,7 @@ This trick of pre-labelling the example using the current best model available a
 * The annotations adhere to spaCy format and are ready to serve as input to spaCy NER model.   
 No additional code required!
 
-**Note**: not using pandas dataframe? No problem. You can always label entities from text stored in a simple python list (see `list_annotations.py`);
+**Note**: not using pandas dataframe? No problem. You can always label entities from text stored in a simple python list (see `list_annotations.py`).
 
 Blog post: [medium/enrico.alemani/spacy-annotator](https://medium.com/@enrico.alemani/how-to-create-training-data-for-spacy-ner-models-using-ipywidgets-c4aa71bf61a2)
 
