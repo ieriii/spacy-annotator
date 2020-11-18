@@ -48,7 +48,7 @@ pd_dd['annotations'][0]
 
 ## Version
 ipywidgets: 7.5.1   
-re: 2.2.1
+re: 2.2.1   
 spacy: 2.2.4
 
 ## References
