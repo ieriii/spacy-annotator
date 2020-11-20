@@ -9,13 +9,13 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
 setup(
   name = 'spacy_annotator',
   packages=['spacy_annotator'],
-  version = '1.1',
+  version = '1.2',
   license='MIT',
   description = 'SpaCy annotator for Named Entity Recognition (NER) using ipywidgets.',
   author = 'Enrico Alemani',
   author_email = 'enrico.alemani@hey.com',
   url = 'https://github.com/ieriii/spacy-annotator',
-  download_url = 'https://github.com/ieriii/spacy-annotator/archive/v_01.tar.gz',
+  download_url = 'https://github.com/ieriii/spacy-annotator/archive/v_1.2.tar.gz',
   keywords = ['spacy', 'NER', 'NLP'],
   install_requires=[
         'numpy',
