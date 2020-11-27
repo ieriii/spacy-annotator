@@ -54,3 +54,7 @@ spacy: 2.2.4
 ## References
 spacy-annotator is based on [spaCy](https://spacy.io/) and [pigeon](https://github.com/agermanidis/pigeon).   
 Many thanks to them for making their awesome libraries publicly available.
+
+*Note*:
+spaCy is a great library and, most importantly, free to use. So please also consider using https://prodi.gy/ annotator to keep supporting the spaCy deveopment.
+
