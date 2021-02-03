@@ -1,17 +1,19 @@
 # TODO review requirements
 from collections import defaultdict
-from IPython.display import display, clear_output
-from ipywidgets import Button, HTML, HBox, Textarea, Output, Layout
+from IPython.display import clear_output, display, display_html
+from ipywidgets import Button, HTML, HBox, Text, Output, Layout
 import numpy as np
 import pandas as pd
 import re
 import random
 import spacy
+from spacy import displacy
+
 from .annotator_utils import filter_spans
 
 # TODO review
-# from .pandas_annotations import annotate
-# from .list_annotations import annotate
+from .pandas_annotations import annotate
+from .list_annotations import annotate
 
 class Annotator: # TODO (object) ?
     # TODO clean up
@@ -40,22 +42,19 @@ class Annotator: # TODO (object) ?
     def __init__(
         self,
         *,
-#          sample_size=0.1,
-#          strata=None,
          model=None,
-         labels=None,
+         labels,
 #          regex_flags=0,
-#          shuffle=False,
          delimiter=',',
          include_skip=True,
-#          display_fn=display
     ):
-        if model is not None:
-            self.model = model
+        self.model = model
+        if self.model is not None:
+            self.nlp = model
         else:
             # TODO think of better solution?
-            self.model = spacy.load("en_core_web_sm", disable=["tagger", "parser", "ner"])
-        self.labels = labels # check spacy terminology
+            self.nlp = spacy.load("en_core_web_sm", disable=["tagger", "parser"])
+        self.labels = labels # TODO check spacy terminology
         self.delimiter = delimiter
         self.include_skip = include_skip
     
@@ -65,19 +64,18 @@ class Annotator: # TODO (object) ?
             # TODO clean up
             """
             \033[1mInstructions\033[0m \n
-            Input must be in the following format: \n
-            \t labelA: item1, item2; \n
-            labelB: itemX, itemZ; \n
-            If no entities in text, leave as is and press submit. \n
-            Similarly, if no entities for a particular label, leave as is (or delete the line for that label). \n
+            For each entity type, input must be a DELIMITER separated string. \n
+            If no entities in text, leave as is and press submit.
+            Similarly, if no entities for a particular label, leave as is. \n
             Buttons: \n
-            * submit inserts new annotation (or overwrites existing one if one is present). \n
-            * skip moves forward and leaves empty string (or existing annotation if one is present). \n
-            * finish terminates the annotation session.
+            \t * submit inserts new annotation (or overwrites existing one if one is present). \n
+            \t * skip moves forward and leaves empty string (or existing annotation if one is present). \n
+            \t * finish terminates the annotation session.
             """
         )
         
     def _load_data(self, df, sample_size=1,):
+        df_out = df.copy()
 #         if strata is not None:
 #             assert sum([v for k,v in strata.items() if k !='key']) == 1, 'The sum of proportions in strata is different from 1'
 #             sample = (df
@@ -94,19 +92,18 @@ class Annotator: # TODO (object) ?
         if 'annotations' in df.columns:
             raise Exception("Dataframe already has an annotations column, I don't want to overwrite this.")
         else:
-            df['annotations'] = ''
+            df_out['annotations'] = ''
         
-        return df
+        return df_out
     
-    def __add_annotation(self, df, col_text, current_index, annotation): # , regex_flags):   
+    def __add_annotation(self, df, col_text, current_index, annotations): # , regex_flags):
         spans=[]
-        for text in annotation.split(';'):
-            if text:
-                label, items = text.split(':')
+        for label, items in annotations.items():
+            if items:
                 for item in items.split(self.delimiter):
                     item  = item.strip()
-                    label = label.strip()
-                    if item:   # This controls for potential input error such as input empty string after comma
+                    if item: ## This controls for potential input error such as input empty string after comma
+                        # TODO review
                         r = re.compile(f'\\b{item}\\b') # , flags=regex_flags)
                         spans.extend([(span.start(), span.end(), label) for span in r.finditer(df[col_text][current_index])])
                     else:
@@ -114,6 +111,7 @@ class Annotator: # TODO (object) ?
             else:
                 continue
         # If spans overlap, keep the (first) longest spans
+        # TODO review
         spans = filter_spans(spans)
         # Define entities for each text
         entities = {'entities': spans}
@@ -125,6 +123,9 @@ class Annotator: # TODO (object) ?
         *,
         df, 
         col_text,
+#          sample_size=0.1,
+#          shuffle=False,
+#          strata=None,
         show_instructions=False, 
         **kwargs
     ):
@@ -148,16 +149,14 @@ class Annotator: # TODO (object) ?
             return
         
         def submit(btn):
-            self.__add_annotation(sample, col_text, current_index, ta.value) # , regex_flags)
-            ta.value = reset_textarea()
+            self.__add_annotation(sample, col_text, current_index, {t.description: t.value for t in textboxes.values()}) # TODO , regex_flags)
+            for textbox in textboxes.values():
+                textbox.value = ""
             show_next()
             
         def set_label_text():
             nonlocal count_label
             count_label.value = f'{current_index} examples annotated, {len(sample) - current_index} examples left'
-
-        def get_bigger(args):        
-            ta.rows = ta.value.count('\n') + 1
             
         def reset_textarea():
             value = (';\n'.join(f'{label}: insert' for label in self.labels)+';')
@@ -170,49 +169,25 @@ class Annotator: # TODO (object) ?
             if current_index >= len(sample):
                 for btn in buttons:
                     btn.disabled = True
-                return
-
-            with out:
-                clear_output(wait=True)
-                print ('\033[1mText:\033[0m')
-                display(sample[col_text][current_index])
-                print('')
-
-                # Active learning
-#                 if self.model is not None:
-
-#                     with nlp.disable_pipes('ner'):
-#                         doc = nlp(sample[col_text][current_index])
-
-#                     # Set probability threshold
-#                     threshold = 0.3
-#                     # Search for entities using beam search
-#                     beams = nlp.entity.beam_parse([ doc ], beam_width = 16, beam_density = 0.0001)
-
-#                     # Get scores
-#                     entity_scores = defaultdict(float)
-#                     for beam in beams:
-#                         for score, ents in nlp.entity.moves.get_beam_parses(beam):
-#                             for start, end, label in ents:
-#                                 entity_scores[(start, end, label)] += score
-
-
-#                     if strata is not None:
-#                         print(f'\033[1mEntities and scores from {sample[strata["key"]][current_index]} sample\033[0m')
-#                     else:
-#                         print ('\033[1mEntities and scores\033[0m')
-
-#                     if any(val >= threshold for val in sorted(entity_scores.values(), reverse=True)):
-#                         for key in entity_scores:
-#                             start, end, label = key
-#                             score = entity_scores[key]
-#                             if (score >= threshold):
-#                                 print (f'{label}, {doc[start:end]}, Score: {score}')
-
-#                     elif all(val< threshold for val in sorted(entity_scores.values(), reverse=True)):
-#                         print('No entities found')
-#                     else:
-#                         print('No entities found')
+                with out:
+                    clear_output(wait=True)
+                    print ("\033[1mThat's all folks!\033[0m\n")
+            else:
+                with out:
+                    clear_output(wait=True)
+                    print ('\033[1mText:\033[0m')
+                    doc = self.nlp(sample[col_text][current_index])
+                    if self.model is None:
+                        doc.ents = []
+                    for label in textboxes.keys():
+                        textboxes[label].value = ", ".join([ent.text for ent in doc.ents if ent.label_ == label])
+                    # TODO remove warning of no ents on first doc
+                    # TODO remove null
+                    html = displacy.render(doc, style="ent")
+                    display_html(html, raw=True)
+                    print('')
+            # TODO check out nlp.entity.beam_parse in spacy_annotator.pandas_annotations.annotate
+            # understand threshold used by default, etc.
 
         ## IPYWIDGET ----
         
@@ -244,13 +219,17 @@ class Annotator: # TODO (object) ?
         set_label_text()
         display(count_label)
 
-        ta = Textarea(
-                value = (';\n'.join(f'{label}: insert' for label in self.labels)+';'),         
-                rows=len(self.labels),                
-                layout=Layout(width="auto")
-                     )
-        ta.observe(get_bigger, 'value')
-        display(ta)
+        # TODO rename to meaningful names: entities, text, buttons, etc.
+        textboxes = {label:
+                     Text(
+                         value='',
+                         description=f'{label}',
+                         placeholder=f'ent one{self.delimiter} ent two{self.delimiter} ent three',
+                         #     disabled=False,
+                         layout=Layout(width="auto")
+                     ) for label in self.labels
+                    }
+        display(*textboxes.values())
 
         box = HBox(buttons)
         display(box)
