@@ -15,16 +15,17 @@ setup(
     author = 'Enrico Alemani',
     author_email = 'enrico.alemani@hey.com',
     url = 'https://github.com/ieriii/spacy-annotator',
-    download_url = 'https://github.com/ieriii/spacy-annotator/archive/v_1.2.tar.gz',
+    download_url = 'https://github.com/ieriii/spacy-annotator/archive/v_2.0.0.tar.gz',
     keywords = ['spacy', 'NER', 'NLP'],
     install_requires=[
-        'numpy',
-        'spacy==2.2.4',
+        'ipython',
         'ipywidgets>=7.5.1',
-        'ipython'
+        'numpy',
+        'pandas',
+        'spacy',
       ],
     zip_safe=False,
-    #Enable pypi description
+    # Enable pypi description
     long_description=long_description,
     long_description_content_type="text/markdown"
 )

@@ -9,6 +9,7 @@ import random
 import spacy
 from spacy import displacy
 
+# TODO review
 from .annotator_utils import filter_spans
 
 # TODO review
@@ -44,8 +45,8 @@ class Annotator: # TODO (object) ?
         *,
          model=None,
          labels,
-#          regex_flags=0,
          delimiter=',',
+#          regex_flags=0,
          include_skip=True,
     ):
         self.model = model
@@ -123,7 +124,7 @@ class Annotator: # TODO (object) ?
         *,
         df, 
         col_text,
-#          sample_size=0.1,
+#          sample_size=1,
 #          shuffle=False,
 #          strata=None,
         show_instructions=False, 
@@ -131,8 +132,7 @@ class Annotator: # TODO (object) ?
     ):
         ## CHECK INPUTS ----
         
-        #         assert col_text is not None, 'Please provide a pandas column containing text to be labelled.'
-#         assert labels is not None, 'Please provide a list of labels.'
+        assert col_text is not None, 'Please provide a name of column containing text to be labelled.'
 
         ## PRE-PROCESS DATA ---
         
@@ -188,6 +188,7 @@ class Annotator: # TODO (object) ?
                     print('')
             # TODO check out nlp.entity.beam_parse in spacy_annotator.pandas_annotations.annotate
             # understand threshold used by default, etc.
+            # see https://stackoverflow.com/questions/46934523/spacy-ner-probability
 
         ## IPYWIDGET ----
         
@@ -205,9 +206,9 @@ class Annotator: # TODO (object) ?
             btn.on_click(skip)
             buttons.append(btn)
             
-        btn = Button(description='previous')
-        # TODO add "previous" button, cf pigeonXT
-        buttons.append(btn)
+#         btn = Button(description='previous')
+#         # TODO add "previous" button, cf pigeonXT
+#         buttons.append(btn)
         
         btn = Button(description='finish')
         btn.on_click(finish)
