@@ -1,16 +1,15 @@
 # TODO review requirements
-from collections import defaultdict
+# from collections import defaultdict
 from IPython.display import clear_output, display, display_html
 from ipywidgets import Button, HTML, HBox, Text, Output, Layout
-import numpy as np
+# import numpy as np
 import pandas as pd
-import re
-import random
+# import re
+# import random
 import spacy
 from spacy import displacy
-
-# TODO review
-from .annotator_utils import filter_spans
+from spacy.matcher import PhraseMatcher
+from spacy.tokens import Span
 
 # TODO review
 from .pandas_annotations import annotate
@@ -43,26 +42,26 @@ class Annotator: # TODO (object) ?
     def __init__(
         self,
         *,
-         model=None,
-         labels,
-         delimiter=',',
-#          regex_flags=0,
-         include_skip=True,
+        model=None,
+        labels,
+        delimiter=',',
+        attr="LOWER", # "ORTH"
+        include_skip=True,
     ):
         self.model = model
         if self.model is not None:
             self.nlp = model
         else:
-            # TODO think of better solution?
+            # TODO think of better solution for default?
             self.nlp = spacy.load("en_core_web_sm", disable=["tagger", "parser"])
         self.labels = labels # TODO check spacy terminology
         self.delimiter = delimiter
+        self.attr = attr
         self.include_skip = include_skip
     
     @property
     def instructions(self):
         print(
-            # TODO clean up
             """
             \033[1mInstructions\033[0m \n
             For each entity type, input must be a DELIMITER separated string. \n
@@ -98,25 +97,27 @@ class Annotator: # TODO (object) ?
         return df_out
     
     def __add_annotation(self, df, col_text, current_index, annotations): # , regex_flags):
-        spans=[]
+        spans = []
         for label, items in annotations.items():
             if items:
-                for item in items.split(self.delimiter):
-                    item  = item.strip()
-                    if item: ## This controls for potential input error such as input empty string after comma
-                        # TODO review
-                        r = re.compile(f'\\b{item}\\b') # , flags=regex_flags)
-                        spans.extend([(span.start(), span.end(), label) for span in r.finditer(df[col_text][current_index])])
-                    else:
-                        continue
+                item_list = [i.strip() for i in items.split(self.delimiter) if i.strip() != ""]
+                print(item_list)
+                matcher = PhraseMatcher(self.nlp.vocab, attr=self.attr)
+                matcher.add(label, [self.nlp(item) for item in item_list])
+                # TODO disable useless pipe components
+                doc = self.nlp(df[col_text][current_index])
+                matches = matcher(doc)
+                print(matches)
+                spans_new = []
+                for match_id, start, end in matches:
+                    span = Span(doc, start, end, label="")
+                    spans_new.append(span)
+                spans_filtered = spacy.util.filter_spans(spans_new)
+                print(spans_filtered)
+                spans.extend([(span.start_char, span.end_char, label) for span in spans_filtered])
             else:
                 continue
-        # If spans overlap, keep the (first) longest spans
-        # TODO review
-        spans = filter_spans(spans)
-        # Define entities for each text
         entities = {'entities': spans}
-        # Add entities to dataframe
         df.at[current_index, 'annotations'] = (df[col_text][current_index], entities)
     
     def annotate(
