@@ -11,10 +11,6 @@ from spacy import displacy
 from spacy.matcher import PhraseMatcher
 from spacy.tokens import Span
 
-# TODO review
-from .pandas_annotations import annotate
-from .list_annotations import annotate
-
 class Annotator: # TODO (object) ?
     # TODO clean up
     """
@@ -74,29 +70,23 @@ class Annotator: # TODO (object) ?
             """
         )
         
-    def _load_data(self, df, sample_size=1,):
-        df_out = df.copy()
-#         if strata is not None:
-#             assert sum([v for k,v in strata.items() if k !='key']) == 1, 'The sum of proportions in strata is different from 1'
-#             sample = (df
-#                       .groupby(strata['key'], group_keys=False)
-#                       .apply(lambda x: x.sample(frac=(len(df)*sample_size*strata[x.name]/len(x))))
-#                      ).reset_index(drop=True)
-
-#         else:
-#             sample = df.sample(frac=sample_size).reset_index(drop=True)
-
-#         if shuffle==True:
-#             sample = sample.sample(frac=1).reset_index(drop=True)
-
+    def _load_data(self, df, sample_size=1, shuffle=False, strata=None):
         if 'annotations' in df.columns:
             raise Exception("Dataframe already has an annotations column, I don't want to overwrite this.")
-        else:
-            df_out['annotations'] = ''
-        
+        df_out = df.copy()
+        if strata is not None:
+            assert sum([v for k,v in strata.items() if k !='key']) == 1, 'The sum of proportions in strata is different from 1'
+            df_out = (df_out
+                      .groupby(strata['key'], group_keys=False)
+                      .apply(lambda x: x.sample(frac=(len(df) * sample_size * strata[x.name] / len(x))))
+                     ).reset_index(drop=True)
+
+        elif (sample_size != 1) or shuffle:
+            df_out = df_out.sample(frac=sample_size).reset_index(drop=True)
+        df_out['annotations'] = ''
         return df_out
     
-    def __add_annotation(self, df, col_text, current_index, annotations): # , regex_flags):
+    def __add_annotation(self, df, col_text, current_index, annotations):
         spans = []
         for label, items in annotations.items():
             if items:
@@ -125,9 +115,6 @@ class Annotator: # TODO (object) ?
         *,
         df, 
         col_text,
-#          sample_size=1,
-#          shuffle=False,
-#          strata=None,
         show_instructions=False, 
         **kwargs
     ):
@@ -150,7 +137,7 @@ class Annotator: # TODO (object) ?
             return
         
         def submit(btn):
-            self.__add_annotation(sample, col_text, current_index, {t.description: t.value for t in textboxes.values()}) # TODO , regex_flags)
+            self.__add_annotation(sample, col_text, current_index, {t.description: t.value for t in textboxes.values()})
             for textbox in textboxes.values():
                 textbox.value = ""
             show_next()
