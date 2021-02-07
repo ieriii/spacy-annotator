@@ -1,41 +1,23 @@
-# TODO review requirements
-# from collections import defaultdict
 from IPython.display import clear_output, display, display_html
 from ipywidgets import Button, HTML, HBox, Text, Output, Layout
-
-# import numpy as np
 import pandas as pd
-
-# import re
-# import random
 import spacy
 from spacy import displacy
 from spacy.matcher import PhraseMatcher
 from spacy.tokens import Span
+import warnings
 
 
-class Annotator:  # TODO (object) ?
-    # TODO clean up
+class Annotator:
     """
-    Build an interactive widget for annotating a list of input examples.
+    Helper class for SpaCy based NER annotation.
     Parameters
     ----------
-    df = pandas dataframe containing text to be labelled
-    col_text = column in pandas dataframe containing text to be labelled
-    sample_size = float, size of the sample to be labelled
-    strata = dict, dictionary {'key':'varname', 'cat1':prop, 'cat2':prop}, where 'key' is the name of the categorical variable to create strata,
-        'cat1' and 'cat2' are the categories in the 'key' variables and 'prop' their proportion in the strata
-    model = spaCy model
-    labels: list(any), list of NER labels
-    regex_flags: regex, one or more regex flag to apply to re.compile. (e.g. re.I|re.DOTALL). Default: no flags
-    shuffle (bool):, option to shuffle data
-    delimiter: str, delimiter to separate entities in GUI. Default: ',' (i.e. comma)
-    include_skip: bool, include option to skip example while annotating
-    display_fn: func, function for displaying an example to the user
-
-    Returns
-    -------
-    annotations (list): list of annotations in spacy format: [example text, {'entities': [(span start, span end, label)]}]
+    model (spacy model) = SpaCy model for pre-annotation, optional.
+    labels (list): list of named entity labels.
+    delimiter (str): delimiter to separate entities in annotator. Default: ',' (comma).
+    attr (str): include option to skip example while annotating. Default: True.
+    include_skip (bool):
     """
 
     def __init__(
@@ -53,7 +35,7 @@ class Annotator:  # TODO (object) ?
         else:
             # TODO think of better solution for default?
             self.nlp = spacy.load("en_core_web_sm")
-        self.labels = labels  # TODO check spacy terminology
+        self.labels = labels
         self.delimiter = delimiter
         self.attr = attr
         self.include_skip = include_skip
@@ -73,7 +55,21 @@ class Annotator:  # TODO (object) ?
             """
         )
 
-    def _load_data(self, df, sample_size=1, shuffle=False, strata=None):
+    def __load_data(self, df, sample_size=1, shuffle=False, strata=None):
+        """
+        Helper function to load data into annotator and pre-process.
+        Parameters
+        ----------
+        df (pandas dataframe): Dataframe with text to be labelled.
+        sample_size (float): Size of the sample to be labelled. Default: 1.
+        shuffle (bool): Option to shuffle data. Default: False.
+        strata (dict): Dictionary {'key':'varname', 'cat1':prop, 'cat2':prop}, where 'key' is the name of the categorical variable to create strata,
+            'cat1' and 'cat2' are the categories in the 'key' variables and 'prop' their proportion in the strata. Default: None.
+
+        Returns
+        -------
+        Pre-processed dataframe to be labelled.
+        """
         if "annotations" in df.columns:
             raise Exception(
                 "Dataframe already has an annotations column, I don't want to overwrite this."
@@ -106,7 +102,6 @@ class Annotator:  # TODO (object) ?
                 print(item_list)
                 matcher = PhraseMatcher(self.nlp.vocab, attr=self.attr)
                 matcher.add(label, [self.nlp(item) for item in item_list])
-                # TODO disable useless pipe components
                 doc = self.nlp(df[col_text][current_index])
                 matches = matcher(doc)
                 print(matches)
@@ -125,6 +120,19 @@ class Annotator:  # TODO (object) ?
         df.at[current_index, "annotations"] = (df[col_text][current_index], entities)
 
     def annotate(self, *, df, col_text, show_instructions=False, **kwargs):
+        """
+        Interactive widget for annotating a dataframe with examples.
+        Parameters
+        ----------
+        df (pandas dataframe): Dataframe with text to be labelled.
+        col_text (str): Column in pandas dataframe containing text to be labelled
+        show_instructions (bool): Whether to print instructions. Default: False.
+        **kwargs: Arguments for __load_data.
+
+        Returns
+        -------
+        Labelled dataframe.
+        """
         ## CHECK INPUTS ----
 
         assert (
@@ -133,7 +141,7 @@ class Annotator:  # TODO (object) ?
 
         ## PRE-PROCESS DATA ---
 
-        sample = self._load_data(df, **kwargs)
+        sample = self.__load_data(df, **kwargs)
 
         ## IPYWIDGET FUNCS ----
 
@@ -185,11 +193,13 @@ class Annotator:  # TODO (object) ?
                         textboxes[label].value = ", ".join(
                             [ent.text for ent in doc.ents if ent.label_ == label]
                         )
-                    # TODO remove warning of no ents on first doc
+                    ## NOTE displacy complains if there are no ents
                     # TODO remove null
-                    html = displacy.render(doc, style="ent")
-                    display_html(html, raw=True)
-                    print("")
+                    with warnings.catch_warnings():
+                        warnings.filterwarnings("ignore")
+                        html = displacy.render(doc, style="ent")
+                        display_html(html, raw=True)
+                        print("")
             # TODO check out nlp.entity.beam_parse in spacy_annotator.pandas_annotations.annotate
             # understand threshold used by default, etc.
             # see https://stackoverflow.com/questions/46934523/spacy-ner-probability
@@ -224,7 +234,6 @@ class Annotator:  # TODO (object) ?
         set_label_text()
         display(count_label)
 
-        # TODO rename to meaningful names: entities, text, buttons, etc.
         textboxes = {
             label: Text(
                 value="",
