@@ -52,7 +52,7 @@ class Annotator:  # TODO (object) ?
             self.nlp = model
         else:
             # TODO think of better solution for default?
-            self.nlp = spacy.load("en_core_web_sm", disable=["tagger", "parser"])
+            self.nlp = spacy.load("en_core_web_sm")
         self.labels = labels  # TODO check spacy terminology
         self.delimiter = delimiter
         self.attr = attr
