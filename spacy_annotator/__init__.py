@@ -12,7 +12,7 @@ import warnings
 class Annotator:
     """
     Helper class for SpaCy based NER annotation.
-    
+
     Parameters
     ----------
     model (spacy model): SpaCy model for pre-annotation, optional.
@@ -59,7 +59,7 @@ class Annotator:
     def __load_data(self, df, fraction, shuffle, strata):
         """
         Function to load data into annotator and pre-process.
-        
+
         Parameters
         ----------
         df (pandas dataframe): Dataframe with text to be labelled.
@@ -97,7 +97,7 @@ class Annotator:
     def __add_annotation(self, df, col_text, current_index, annotations):
         """
         Function to add annotations in spacy format a dataframe.
-        
+
         Parameters
         ----------
         df (pandas dataframe): Dataframe with text to be labelled.
@@ -135,10 +135,19 @@ class Annotator:
         entities = {"entities": spans}
         df.at[current_index, "annotations"] = (df[col_text][current_index], entities)
 
-    def annotate(self, *, df, col_text, show_instructions=False, fraction=1, shuffle=False, strata=None):
+    def annotate(
+        self,
+        *,
+        df,
+        col_text,
+        show_instructions=False,
+        fraction=1,
+        shuffle=False,
+        strata=None,
+    ):
         """
         Interactive widget for annotating a dataframe with examples.
-        
+
         Parameters
         ----------
         df (pandas dataframe): Dataframe with text to be labelled.
