@@ -12,6 +12,7 @@ import warnings
 class Annotator:
     """
     Helper class for SpaCy based NER annotation.
+    
     Parameters
     ----------
     model (spacy model): SpaCy model for pre-annotation, optional.
@@ -55,16 +56,17 @@ class Annotator:
             """
         )
 
-    def __load_data(self, df, fraction=1, shuffle=False, strata=None):
+    def __load_data(self, df, fraction, shuffle, strata):
         """
         Function to load data into annotator and pre-process.
+        
         Parameters
         ----------
         df (pandas dataframe): Dataframe with text to be labelled.
-        fraction (float): Fraction of the sample to be labelled. Default: 1.
-        shuffle (bool): Option to shuffle data. Default: False.
+        fraction (float): Fraction of the sample to be labelled.
+        shuffle (bool): Option to shuffle data.
         strata (dict): Dictionary e.g. {'key':'varname', 'cat1':prop, 'cat2':prop}, where 'key' is the name of the categorical variable to create strata,
-            'cat1' and 'cat2' are the categories in the 'key' variables and 'prop' their proportion in the strata. Default: None.
+            'cat1' and 'cat2' are the categories in the 'key' variables and 'prop' their proportion in the strata.
 
         Returns
         -------
@@ -95,6 +97,7 @@ class Annotator:
     def __add_annotation(self, df, col_text, current_index, annotations):
         """
         Function to add annotations in spacy format a dataframe.
+        
         Parameters
         ----------
         df (pandas dataframe): Dataframe with text to be labelled.
@@ -132,15 +135,19 @@ class Annotator:
         entities = {"entities": spans}
         df.at[current_index, "annotations"] = (df[col_text][current_index], entities)
 
-    def annotate(self, *, df, col_text, show_instructions=False, **kwargs):
+    def annotate(self, *, df, col_text, show_instructions=False, fraction=1, shuffle=False, strata=None):
         """
         Interactive widget for annotating a dataframe with examples.
+        
         Parameters
         ----------
         df (pandas dataframe): Dataframe with text to be labelled.
         col_text (str): Column in pandas dataframe containing text to be labelled.
         show_instructions (bool): Whether to print instructions. Default: False.
-        **kwargs: Arguments for __load_data.
+        fraction (float): Fraction of the sample to be labelled. Default: 1.
+        shuffle (bool): Option to shuffle data. Default: False.
+        strata (dict): Dictionary e.g. {'key':'varname', 'cat1':prop, 'cat2':prop}, where 'key' is the name of the categorical variable to create strata,
+            'cat1' and 'cat2' are the categories in the 'key' variables and 'prop' their proportion in the strata. Default: None.
 
         Returns
         -------
@@ -154,7 +161,7 @@ class Annotator:
 
         ## PRE-PROCESS DATA ---
 
-        sample = self.__load_data(df, **kwargs)
+        sample = self.__load_data(df, fraction, shuffle, strata)
 
         ## IPYWIDGET FUNCS ----
 
