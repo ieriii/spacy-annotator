@@ -218,9 +218,11 @@ class Annotator:
                     doc = self.nlp(sample[col_text][current_index])
                     if self.model is None:
                         doc.ents = []
-                    for label in textboxes.keys():
+                    else:
+                        doc.ents = [ent for ent in doc.ents if ent.label_ in self.labels]
+                    for label in self.labels:
                         textboxes[label].value = ", ".join(
-                            [ent.text for ent in doc.ents if ent.label_ == label]
+                            list(set(ent.text for ent in doc.ents if ent.label_ == label))
                         )
                     ## NOTE displacy complains if there are no ents
                     # TODO remove null
