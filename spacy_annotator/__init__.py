@@ -3,6 +3,7 @@ from ipywidgets import Button, HTML, HBox, Text, Output, Layout
 import pandas as pd
 import spacy
 from spacy import displacy
+from spacy.lang.en import English
 from spacy.matcher import PhraseMatcher
 from spacy.tokens import Span
 import warnings
@@ -13,11 +14,11 @@ class Annotator:
     Helper class for SpaCy based NER annotation.
     Parameters
     ----------
-    model (spacy model) = SpaCy model for pre-annotation, optional.
+    model (spacy model): SpaCy model for pre-annotation, optional.
     labels (list): list of named entity labels.
     delimiter (str): delimiter to separate entities in annotator. Default: ',' (comma).
-    attr (str): include option to skip example while annotating. Default: True.
-    include_skip (bool):
+    attr (str): attr for PhraseMatcher used to select entities. Default: "LOWER".
+    include_skip (bool): include option to skip example while annotating. Default: True.
     """
 
     def __init__(
@@ -33,8 +34,7 @@ class Annotator:
         if self.model is not None:
             self.nlp = model
         else:
-            # TODO think of better solution for default?
-            self.nlp = spacy.load("en_core_web_sm")
+            self.nlp = English()
         self.labels = labels
         self.delimiter = delimiter
         self.attr = attr
@@ -55,15 +55,15 @@ class Annotator:
             """
         )
 
-    def __load_data(self, df, sample_size=1, shuffle=False, strata=None):
+    def __load_data(self, df, fraction=1, shuffle=False, strata=None):
         """
-        Helper function to load data into annotator and pre-process.
+        Function to load data into annotator and pre-process.
         Parameters
         ----------
         df (pandas dataframe): Dataframe with text to be labelled.
-        sample_size (float): Size of the sample to be labelled. Default: 1.
+        fraction (float): Fraction of the sample to be labelled. Default: 1.
         shuffle (bool): Option to shuffle data. Default: False.
-        strata (dict): Dictionary {'key':'varname', 'cat1':prop, 'cat2':prop}, where 'key' is the name of the categorical variable to create strata,
+        strata (dict): Dictionary e.g. {'key':'varname', 'cat1':prop, 'cat2':prop}, where 'key' is the name of the categorical variable to create strata,
             'cat1' and 'cat2' are the categories in the 'key' variables and 'prop' their proportion in the strata. Default: None.
 
         Returns
@@ -82,17 +82,30 @@ class Annotator:
             df_out = (
                 df_out.groupby(strata["key"], group_keys=False).apply(
                     lambda x: x.sample(
-                        frac=(len(df) * sample_size * strata[x.name] / len(x))
+                        frac=(len(df) * fraction * strata[x.name] / len(x))
                     )
                 )
             ).reset_index(drop=True)
 
-        elif (sample_size != 1) or shuffle:
-            df_out = df_out.sample(frac=sample_size).reset_index(drop=True)
+        elif (fraction != 1) or shuffle:
+            df_out = df_out.sample(frac=fraction).reset_index(drop=True)
         df_out["annotations"] = ""
         return df_out
 
     def __add_annotation(self, df, col_text, current_index, annotations):
+        """
+        Function to add annotations in spacy format a dataframe.
+        Parameters
+        ----------
+        df (pandas dataframe): Dataframe with text to be labelled.
+        col_text (str): Column in pandas dataframe containing text to be labelled.
+        current_index (int): Index of DataFrame row to annotate.
+        annotations (dict): Dictionary containing strings of annotation patterns for PhraseMatcher.
+
+        Returns
+        -------
+        Labelled dataframe.
+        """
         spans = []
         for label, items in annotations.items():
             if items:
@@ -125,7 +138,7 @@ class Annotator:
         Parameters
         ----------
         df (pandas dataframe): Dataframe with text to be labelled.
-        col_text (str): Column in pandas dataframe containing text to be labelled
+        col_text (str): Column in pandas dataframe containing text to be labelled.
         show_instructions (bool): Whether to print instructions. Default: False.
         **kwargs: Arguments for __load_data.
 

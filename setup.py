@@ -21,7 +21,6 @@ setup(
     install_requires=[
         "ipython",
         "ipywidgets>=7.5.1",
-        "numpy",
         "pandas",
         "spacy",
     ],
