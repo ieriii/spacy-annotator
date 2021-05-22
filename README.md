@@ -14,7 +14,10 @@ No additional code required!
 Blog post: [medium/enrico.alemani/spacy-annotator](https://medium.com/@enrico.alemani/how-to-create-training-data-for-spacy-ner-models-using-ipywidgets-c4aa71bf61a2)
 
 ## Example: annotations using spaCy model 
-![spacy-annotator_demo](demo/spacy-annotator_demo.gif)
+
+https://user-images.githubusercontent.com/31287731/119233291-4079be00-bb20-11eb-8a8d-7ad1436c662b.mov
+
+
 
 For code, see [spacy_annotator demo](demo/spacy_annotator_demo.ipynb) notebook.
 
