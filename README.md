@@ -5,8 +5,9 @@ The annotator allows users to quickly assign (custom) labels to one or more enti
 
 **Features**:
 
-* The annotator supports pandas dataframe (see `pandas_annotations.py`): it adds annotations in a separate 'annotation' column of the dataframe;
-* Why not use transformers to label your data for you? If a spaCy model is passed into the annotator, the model is used to identify entities and pre-fill the annotator for you. This trick of pre-labelling the example using the current best model available allows for accelerated labelling - also known as of noisy pre-labelling;
+* The annotator supports pandas dataframe: it adds annotations in a separate 'annotation' column of the dataframe;
+* Why not use transformers to label your data for you? 
+If a model is passed into the annotator, it is used to identify entities and pre-fill the annotator for you.
 * The annotations adhere to spaCy format and are ready to serve as input to a spaCy NER model.   
 No additional code required!
 
