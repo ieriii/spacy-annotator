@@ -21,6 +21,9 @@ Blog post: [medium/enrico.alemani/spacy-annotator](https://medium.com/@enrico.al
 
 For code, see [spacy_annotator demo](demo/spacy_annotator_demo.ipynb) notebook.
 
+## Contributors
+[dayalstrub-cma](https://github.com/ieriii/spacy-annotator/tree/annotator-v2) - Refactored code to class, added displacy visualisation and entity ruler.
+
 ## Contributing
 
 1. Fork the repo on GitHub;
