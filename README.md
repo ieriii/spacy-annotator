@@ -1,23 +1,20 @@
 # spacy-annotator
 
 SpaCy annotator for Named Entity Recognition (NER) using ipywidgets.
-The annotator allows users to quickly assign (custom) labels to one or more entities in the text.   
+The annotator allows users to quickly assign (custom) labels to one or more entities in the text, including noisy-prelabelling!   
 
 **Features**:
 
 * The annotator supports pandas dataframe (see `pandas_annotations.py`): it adds annotations in a separate 'annotation' column of the dataframe;
-* If a spaCy model is passed into the annotator, the model is used to identify entities in text.   
-This trick of pre-labelling the example using the current best model available allows for accelerated labelling - also known as of noisy pre-labelling;
+* Why not use transformers to label your data for you? If a spaCy model is passed into the annotator, the model is used to identify entities and pre-fill the annotator for you. This trick of pre-labelling the example using the current best model available allows for accelerated labelling - also known as of noisy pre-labelling;
 * The annotations adhere to spaCy format and are ready to serve as input to a spaCy NER model.   
 No additional code required!
 
-~Note: not using pandas dataframe? No problem. You can always label entities from text stored in a simple python list.~
-
 Blog post: [medium/enrico.alemani/spacy-annotator](https://medium.com/@enrico.alemani/how-to-create-training-data-for-spacy-ner-models-using-ipywidgets-c4aa71bf61a2)
 
-## Example 
+## Example: annotations using spaCy model 
+https://user-images.githubusercontent.com/31287731/119231822-98152b00-bb1a-11eb-89c1-90a7e54c8ceb.mov
 
-![spacy-annotator demo](demo/spacy-annotator_demo.gif)
 
 For code, see [spacy_annotator demo](demo/spacy_annotator_demo.ipynb) notebook.
 
