@@ -31,11 +31,15 @@ class Annotator:
         attr="LOWER",  # "ORTH"
         include_skip=True,
     ):
+        
         self.model = model
+        
         if self.model is not None:
             self.nlp = model
+        
         else:
             self.nlp = English()
+        
         self.labels = labels
         self.delimiter = delimiter
         self.attr = attr
@@ -215,22 +219,25 @@ class Annotator:
                 with out:
                     clear_output(wait=True)
                     print("\033[1mText:\033[0m")
+                    
                     doc = self.nlp(sample[col_text][current_index])
                     if self.model is None:
                         doc.ents = []
+                    
                     else:
                         doc.ents = [ent for ent in doc.ents if ent.label_ in self.labels]
+                    
                     for label in self.labels:
                         textboxes[label].value = ", ".join(
                             list(set(ent.text for ent in doc.ents if ent.label_ == label))
                         )
+                    
                     ## NOTE displacy complains if there are no ents
-                    # TODO remove null
                     with warnings.catch_warnings():
                         warnings.filterwarnings("ignore")
                         html = displacy.render(doc, style="ent")
-                        display_html(html, raw=True)
-                        print("")
+                        display_html(HTML(html), raw=False)
+            
             # TODO check out nlp.entity.beam_parse in spacy_annotator.pandas_annotations.annotate
             # understand threshold used by default, etc.
             # see https://stackoverflow.com/questions/46934523/spacy-ner-probability
