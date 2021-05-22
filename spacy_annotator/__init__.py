@@ -119,18 +119,15 @@ class Annotator:
                 item_list = [
                     i.strip() for i in items.split(self.delimiter) if i.strip() != ""
                 ]
-                print(item_list)
                 matcher = PhraseMatcher(self.nlp.vocab, attr=self.attr)
                 matcher.add(label, [self.nlp(item) for item in item_list])
                 doc = self.nlp(df[col_text][current_index])
                 matches = matcher(doc)
-                print(matches)
                 spans_new = []
                 for match_id, start, end in matches:
                     span = Span(doc, start, end, label="")
                     spans_new.append(span)
                 spans_filtered = spacy.util.filter_spans(spans_new)
-                print(spans_filtered)
                 spans.extend(
                     [(span.start_char, span.end_char, label) for span in spans_filtered]
                 )
