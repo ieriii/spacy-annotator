@@ -209,12 +209,16 @@ class Annotator:
             nonlocal current_index
             current_index += 1
             set_label_text()
+            
             if current_index >= len(sample):
+                
                 for btn in buttons:
                     btn.disabled = True
+                
                 with out:
                     clear_output(wait=True)
                     print("\033[1mThat's all folks!\033[0m\n")
+            
             else:
                 with out:
                     clear_output(wait=True)
@@ -243,7 +247,6 @@ class Annotator:
             # see https://stackoverflow.com/questions/46934523/spacy-ner-probability
 
         ## IPYWIDGET ----
-
         if show_instructions:
             self.instructions
 
