@@ -27,7 +27,7 @@ https://user-images.githubusercontent.com/31287731/119233291-4079be00-bb20-11eb-
 For code, see [spacy_annotator demo](demo/spacy_annotator_demo.ipynb) notebook.
 
 ## Contributors
-[dayalstrub-cma](https://github.com/ieriii/spacy-annotator/tree/annotator-v2) - Refactored code to class, added displacy visualisation and entity ruler.
+[dayalstrub-cma](https://github.com/dayalstrub-cma) - Refactored code to class, added displacy visualisation and entity ruler.
 
 ## Contributing
 
