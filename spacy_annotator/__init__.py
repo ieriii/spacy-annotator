@@ -6,6 +6,9 @@ from spacy import displacy
 from spacy.lang.en import English
 from spacy.matcher import PhraseMatcher
 from spacy.tokens import Span
+from spacy.tokens import DocBin
+from spacy.util import filter_spans
+import os
 import warnings
 
 
@@ -135,6 +138,50 @@ class Annotator:
                 continue
         entities = {"entities": spans}
         df.at[current_index, "annotations"] = (df[col_text][current_index], entities)
+    
+    def to_spacy(self, df, file_path: str):
+        """
+        Function to convert dataframe returned by annotator into spacy .
+
+        Parameters
+        ----------
+        df (pandas dataframe): Dataframe returned by the annotator (see Annotate()).
+        file_path (string): Filepath to save the .spacy file to.
+        Returns
+        -------
+        Spacy docbin if a user wants to combine additional training data
+        """
+        # make sure we are importing a dataframe
+        if(not isinstance(df, pd.DataFrame)):
+            raise TypeError("Pass the pandas dataframe returned by annotate()")
+
+        # the DocBin will store the example documents
+        db = DocBin()
+
+        # extract list of tuples of annotations from the df output by the annotator
+        training_data = (df['annotations']).tolist()
+        # upack text and dictionary of spans and labels from tuple
+        for text, annotations in training_data:
+            
+            # save text into a spacy doc file
+            doc = self.nlp(text)
+            ents = []
+            for start, end, label in annotations['entities']:
+                # create the span label
+                span = doc.char_span(start, end, label=label)
+                # add span and labels to our entities list
+                ents.append(span)
+            # drop spans that have been tagged by multiple entities
+            doc.ents = filter_spans(ents)
+            # add the spacy doc of text and tagged spans to the docbin
+            db.add(doc)
+
+        # convert the docbin into a .spacy file for training in a spacy pipeline
+        db.to_disk(file_path)
+        print("Saved spacy file to:", os.path.join(os.getcwd(), file_path))
+
+        # return the docbin if one wants to combine additional training data
+        return db
 
     def annotate(
         self,
