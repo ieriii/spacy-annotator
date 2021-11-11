@@ -276,7 +276,7 @@ class Annotator:
                         doc.ents = [ent for ent in doc.ents if ent.label_ in self.labels]
                     
                     for label in self.labels:
-                        textboxes[label].value = ", ".join(
+                        textboxes[label].value = self.delimiter.join(
                             list(set(ent.text for ent in doc.ents if ent.label_ == label))
                         )
                     
