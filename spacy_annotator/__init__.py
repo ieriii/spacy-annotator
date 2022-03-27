@@ -337,3 +337,4 @@ class Annotator:
         print(f"Spacy file saved to: {file_path}")
 
         return db
+        
