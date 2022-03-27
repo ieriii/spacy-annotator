@@ -28,6 +28,7 @@ For code, see [spacy_annotator demo](demo/spacy_annotator_demo.ipynb) notebook.
 
 ## Contributors
 [dayalstrub-cma](https://github.com/dayalstrub-cma) - Refactored code to class, added displacy visualisation and entity ruler.
+[LeafmanZ](https://github.com/LeafmanZ) - Added to_spacy method.
 
 ## Contributing
 
