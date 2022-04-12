@@ -16,7 +16,6 @@ setup(
     author="Enrico Alemani",
     author_email="enrico.alemani@hey.com",
     url="https://github.com/ieriii/spacy-annotator",
-    download_url="https://github.com/ieriii/spacy-annotator/archive/refs/tags/2.1.1.tar.gz",
     keywords=["spacy", "NER", "NLP"],
     install_requires=[
         "ipython",
