@@ -316,7 +316,7 @@ class Annotator:
             file_path = os.path.join(os.getcwd(), 'annotations.spacy')
         
         db = DocBin()
-        training_data = (df['annotations']).tolist()
+        training_data = [ant for ant in df['annotations'].tolist() if ant]
         for text, annotations in training_data:
             
             ents = []
