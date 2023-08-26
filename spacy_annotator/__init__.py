@@ -204,7 +204,6 @@ class Annotator:
             nonlocal current_index
             current_index += 1
             set_label_text()
-            
             if current_index >= len(sample):
                 
                 for btn in buttons:
@@ -225,7 +224,7 @@ class Annotator:
                     
                     else:
                         doc.ents = [ent for ent in doc.ents if ent.label_ in self.labels]
-                    
+                   
                     for label in self.labels:
                         textboxes[label].value = self.delimiter.join(
                             list(set(ent.text for ent in doc.ents if ent.label_ == label))
@@ -235,8 +234,8 @@ class Annotator:
                     with warnings.catch_warnings():
                         warnings.filterwarnings("ignore")
                         html = displacy.render(doc, style="ent")
-                        display_html(HTML(html), raw=False)
-            
+                        display(HTML(html), raw=False)
+
             # TODO check out nlp.entity.beam_parse in spacy_annotator.pandas_annotations.annotate
             # understand threshold used by default, etc.
             # see https://stackoverflow.com/questions/46934523/spacy-ner-probability
