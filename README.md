@@ -49,3 +49,6 @@ Many thanks to them for making their awesome libraries publicly available. Anoth
 
 **Note**:
 spaCy is a great library and, most importantly, free to use. So please also consider using the https://prodi.gy/ annotator to keep supporting the spaCy deveopment.
+
+## Changelog
+2024-03-25: Update ipywidget requirements to >=8

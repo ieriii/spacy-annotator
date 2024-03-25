@@ -235,7 +235,7 @@ class Annotator:
                     with warnings.catch_warnings():
                         warnings.filterwarnings("ignore")
                         html = displacy.render(doc, style="ent")
-                        display_html(HTML(html), raw=False)
+                        display(HTML(html), raw=False)
             
             # TODO check out nlp.entity.beam_parse in spacy_annotator.pandas_annotations.annotate
             # understand threshold used by default, etc.

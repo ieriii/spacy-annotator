@@ -10,7 +10,7 @@ with open(path.join(this_directory, "README.md"), encoding="utf-8") as f:
 setup(
     name="spacy_annotator",
     packages=["spacy_annotator"],
-    version="2.1.3",
+    version="2.1.4",
     license="MIT",
     description="SpaCy annotator for Named Entity Recognition (NER) using ipywidgets.",
     author="Enrico Alemani",
@@ -19,7 +19,7 @@ setup(
     keywords=["spacy", "NER", "NLP"],
     install_requires=[
         "ipython",
-        "ipywidgets>=7.5.1",
+        "ipywidgets>=8",
         "pandas",
         "spacy",
     ],

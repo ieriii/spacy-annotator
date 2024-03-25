@@ -1,0 +1,10 @@
+name: spacy-annotator
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - ipython
+  - ipywidgets>=8
+  - pandas
+  - python=3.11
+  - spacy
